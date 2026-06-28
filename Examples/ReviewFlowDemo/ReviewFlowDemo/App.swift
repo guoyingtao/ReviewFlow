@@ -10,9 +10,9 @@ struct ReviewFlowDemoApp: App {
             minDaysSinceInstall: 0,
             cooldownDays: 1,
             minimumSignificantEvents: 0,
-            appStoreID: nil,
             feedbackEmail: "support@example.com",
-            feedbackURL: URL(string: "https://example.com/feedback")
+            feedbackURL: URL(string: "https://example.com/feedback"),
+            appStoreID: nil
         )
     )
 
