@@ -343,7 +343,7 @@
 /* Begin XCLocalSwiftPackageReference section */
 		A10000000000000000000070 /* XCLocalSwiftPackageReference "../../" */ = {
 			isa = XCLocalSwiftPackageReference;
-			relativePath = ../../;
+			relativePath = "../../";
 		};
 /* End XCLocalSwiftPackageReference section */
 
