@@ -1,5 +1,5 @@
 import XCTest
-@testable import ReviewKit
+@testable import ReviewFlow
 
 // MARK: - ConfigTests
 
@@ -8,45 +8,45 @@ final class ConfigTests: XCTestCase {
     // MARK: - Default values
 
     func test_defaultConfig_minLaunchCount() {
-        XCTAssertEqual(ReviewKitConfig.default.minLaunchCount, 5)
+        XCTAssertEqual(ReviewFlowConfig.default.minLaunchCount, 5)
     }
 
     func test_defaultConfig_minDaysSinceInstall() {
-        XCTAssertEqual(ReviewKitConfig.default.minDaysSinceInstall, 3)
+        XCTAssertEqual(ReviewFlowConfig.default.minDaysSinceInstall, 3)
     }
 
     func test_defaultConfig_cooldownDays() {
-        XCTAssertEqual(ReviewKitConfig.default.cooldownDays, 7)
+        XCTAssertEqual(ReviewFlowConfig.default.cooldownDays, 7)
     }
 
     func test_defaultConfig_minimumSignificantEvents() {
-        XCTAssertEqual(ReviewKitConfig.default.minimumSignificantEvents, 0)
+        XCTAssertEqual(ReviewFlowConfig.default.minimumSignificantEvents, 0)
     }
 
     func test_defaultConfig_feedbackEmail_isNil() {
-        XCTAssertNil(ReviewKitConfig.default.feedbackEmail)
+        XCTAssertNil(ReviewFlowConfig.default.feedbackEmail)
     }
 
     func test_defaultConfig_feedbackURL_isNil() {
-        XCTAssertNil(ReviewKitConfig.default.feedbackURL)
+        XCTAssertNil(ReviewFlowConfig.default.feedbackURL)
     }
 
     func test_defaultConfig_appStoreID_isNil() {
-        XCTAssertNil(ReviewKitConfig.default.appStoreID)
+        XCTAssertNil(ReviewFlowConfig.default.appStoreID)
     }
 
     func test_defaultConfig_enableAnimations() {
-        XCTAssertTrue(ReviewKitConfig.default.enableAnimations)
+        XCTAssertTrue(ReviewFlowConfig.default.enableAnimations)
     }
 
     func test_defaultConfig_enableHaptics() {
-        XCTAssertTrue(ReviewKitConfig.default.enableHaptics)
+        XCTAssertTrue(ReviewFlowConfig.default.enableHaptics)
     }
 
     // MARK: - Custom values
 
     func test_customConfig_overridesDefaults() {
-        let config = ReviewKitConfig(
+        let config = ReviewFlowConfig(
             minLaunchCount: 2,
             minDaysSinceInstall: 1,
             cooldownDays: 14,
@@ -69,37 +69,37 @@ final class ConfigTests: XCTestCase {
         XCTAssertFalse(config.enableHaptics)
     }
 
-    // MARK: - ReviewKitTexts defaults
+    // MARK: - ReviewFlowTexts defaults
 
     func test_defaultTexts_promptQuestion() {
-        XCTAssertEqual(ReviewKitTexts.default.promptQuestion, "How are you enjoying the app?")
+        XCTAssertEqual(ReviewFlowTexts.default.promptQuestion, "How are you enjoying the app?")
     }
 
     func test_defaultTexts_loveItButton() {
-        XCTAssertFalse(ReviewKitTexts.default.loveItButton.isEmpty)
+        XCTAssertFalse(ReviewFlowTexts.default.loveItButton.isEmpty)
     }
 
     func test_defaultTexts_canBeOverridden() {
-        var texts = ReviewKitTexts.default
+        var texts = ReviewFlowTexts.default
         texts.promptQuestion = "Do you love this app?"
         XCTAssertEqual(texts.promptQuestion, "Do you love this app?")
         // Original default is unchanged
-        XCTAssertEqual(ReviewKitTexts.default.promptQuestion, "How are you enjoying the app?")
+        XCTAssertEqual(ReviewFlowTexts.default.promptQuestion, "How are you enjoying the app?")
     }
 
-    // MARK: - ReviewKitAppearance defaults
+    // MARK: - ReviewFlowAppearance defaults
 
     #if canImport(SwiftUI)
     func test_defaultAppearance_cornerRadius() {
-        XCTAssertEqual(ReviewKitAppearance.default.cornerRadius, 20)
+        XCTAssertEqual(ReviewFlowAppearance.default.cornerRadius, 20)
     }
 
     func test_defaultAppearance_cardBackgroundColor_isNil() {
-        XCTAssertNil(ReviewKitAppearance.default.cardBackgroundColor)
+        XCTAssertNil(ReviewFlowAppearance.default.cardBackgroundColor)
     }
 
     func test_defaultAppearance_scrimOpacity() {
-        XCTAssertEqual(ReviewKitAppearance.default.scrimOpacity, 0.4, accuracy: 0.001)
+        XCTAssertEqual(ReviewFlowAppearance.default.scrimOpacity, 0.4, accuracy: 0.001)
     }
     #endif
 }

@@ -1,8 +1,8 @@
-# ReviewKit
+# ReviewFlow
 
-**ReviewKit** is a production-ready, open-source Swift Package that helps iOS developers increase App Store ratings without annoying users.
+**ReviewFlow** is a production-ready, open-source Swift Package that helps iOS developers increase App Store ratings without annoying users.
 
-Instead of immediately asking users to rate your app, ReviewKit first measures their sentiment. Happy users are guided to Apple's in-app review prompt; unhappy users are offered a way to contact you instead.
+Instead of immediately asking users to rate your app, ReviewFlow first measures their sentiment. Happy users are guided to Apple's in-app review prompt; unhappy users are offered a way to contact you instead.
 
 ---
 
@@ -37,7 +37,7 @@ Instead of immediately asking users to rate your app, ReviewKit first measures t
 
 ### Swift Package Manager
 
-Add ReviewKit to your project via **File › Add Package Dependencies** in Xcode, then enter the repository URL:
+Add ReviewFlow to your project via **File › Add Package Dependencies** in Xcode, then enter the repository URL:
 
 ```
 https://github.com/guoyingtao/ReviewFlow
@@ -53,7 +53,7 @@ targets: [
     .target(
         name: "YourTarget",
         dependencies: [
-            .product(name: "ReviewKit", package: "ReviewFlow")
+            .product(name: "ReviewFlow", package: "ReviewFlow")
         ]
     ),
 ]
@@ -65,13 +65,13 @@ targets: [
 
 ```swift
 import SwiftUI
-import ReviewKit
+import ReviewFlow
 
 @main
 struct MyApp: App {
 
     @StateObject private var reviewManager = ReviewManager(
-        config: ReviewKitConfig(
+        config: ReviewFlowConfig(
             minLaunchCount: 3,
             appStoreID: "123456789",
             feedbackEmail: "support@example.com"
@@ -82,7 +82,7 @@ struct MyApp: App {
         WindowGroup {
             ContentView()
                 // Attach the overlay to your root view
-                .reviewKit(manager: reviewManager)
+                .reviewFlow(manager: reviewManager)
                 .onAppear {
                     reviewManager.recordLaunch()
                     reviewManager.requestReviewIfNeeded()
@@ -92,7 +92,7 @@ struct MyApp: App {
 }
 ```
 
-That's it! ReviewKit handles the rest.
+That's it! ReviewFlow handles the rest.
 
 ---
 
@@ -124,10 +124,10 @@ Not eligible  Eligible
 
 ## Configuration
 
-Pass a `ReviewKitConfig` to `ReviewManager` to customise all eligibility thresholds and behaviour.
+Pass a `ReviewFlowConfig` to `ReviewManager` to customise all eligibility thresholds and behaviour.
 
 ```swift
-let config = ReviewKitConfig(
+let config = ReviewFlowConfig(
     // Eligibility thresholds
     minLaunchCount: 5,            // Default: 5
     minDaysSinceInstall: 3,       // Default: 3
@@ -187,7 +187,7 @@ reviewManager.requestReviewIfNeeded()
 Override any string to match your app's tone or to provide translations:
 
 ```swift
-var texts = ReviewKitTexts.default
+var texts = ReviewFlowTexts.default
 texts.promptTitle = "Enjoying the app?"
 texts.promptQuestion = "We'd love to hear from you."
 texts.loveItButton = "❤️  Love it!"
@@ -195,20 +195,20 @@ texts.itsOKButton = "🤔  It's alright"
 texts.needsImprovementButton = "😞  Needs work"
 texts.maybeLaterButton = "Not now"
 
-let config = ReviewKitConfig(texts: texts)
+let config = ReviewFlowConfig(texts: texts)
 ```
 
 ### Appearance
 
 ```swift
-var appearance = ReviewKitAppearance.default
+var appearance = ReviewFlowAppearance.default
 appearance.cornerRadius = 28
 appearance.accentColor = .purple
 appearance.titleFont = .title3.bold()
 appearance.bodyFont = .callout
 appearance.scrimOpacity = 0.5
 
-let config = ReviewKitConfig(appearance: appearance)
+let config = ReviewFlowConfig(appearance: appearance)
 ```
 
 ---
@@ -287,7 +287,7 @@ All delegate methods have empty default implementations — implement only what 
 Implement `ReviewStorage` to replace the default `UserDefaults` backend:
 
 ```swift
-import ReviewKit
+import ReviewFlow
 
 final class KeychainReviewStorage: ReviewStorage {
     var launchCount: Int {
@@ -318,7 +318,7 @@ let manager = ReviewManager(config: .default, storage: storage)
 
 ## Swift Concurrency
 
-ReviewKit is `@MainActor`-safe. Use the async variant when calling from a Swift Concurrency context:
+ReviewFlow is `@MainActor`-safe. Use the async variant when calling from a Swift Concurrency context:
 
 ```swift
 .task {
@@ -344,7 +344,7 @@ ReviewManager.shared.requestReviewIfNeeded()
 
 // Attach the overlay
 ContentView()
-    .reviewKit()  // Uses ReviewManager.shared
+    .reviewFlow()  // Uses ReviewManager.shared
 ```
 
 ---
@@ -373,19 +373,19 @@ manager.requestReviewIfNeeded()
 ## FAQ
 
 **Q: Will this bypass Apple's rate-limiting on review prompts?**  
-A: No. ReviewKit calls the standard `SKStoreReviewController.requestReview(in:)` API, which Apple limits to three prompts per 365 days. ReviewKit's own cooldown adds an extra layer of protection.
+A: No. ReviewFlow calls the standard `SKStoreReviewController.requestReview(in:)` API, which Apple limits to three prompts per 365 days. ReviewFlow's own cooldown adds an extra layer of protection.
 
 **Q: Can I show the prompt manually regardless of eligibility?**  
 A: Yes. Set the storage state to eligible values and call `requestReviewIfNeeded()`. Alternatively, manage `isShowingPrompt` is an internal API, but you can bypass eligibility by directly preparing the storage.
 
-**Q: Does ReviewKit track users or collect data?**  
-A: No. ReviewKit stores only launch counts, dates, and event counts in `UserDefaults` (or your custom backend) on the device. No data leaves the device.
+**Q: Does ReviewFlow track users or collect data?**  
+A: No. ReviewFlow stores only launch counts, dates, and event counts in `UserDefaults` (or your custom backend) on the device. No data leaves the device.
 
-**Q: Can I use ReviewKit with UIKit?**  
+**Q: Can I use ReviewFlow with UIKit?**  
 A: The core logic (`ReviewManager`, `ReviewStorage`, config) works anywhere. The SwiftUI UI is SwiftUI-only. You can trigger the native `SKStoreReviewController` directly from UIKit using `ReviewManager` as the state tracker.
 
 **Q: What happens if the user taps "Needs improvement"?**  
-A: ReviewKit shows a feedback card (email / URL). It never calls `SKStoreReviewController` for unhappy users, and it does NOT set "never ask again" — they may feel better in a future session.
+A: ReviewFlow shows a feedback card (email / URL). It never calls `SKStoreReviewController` for unhappy users, and it does NOT set "never ask again" — they may feel better in a future session.
 
 ---
 
@@ -401,7 +401,7 @@ A: ReviewKit shows a feedback card (email / URL). It never calls `SKStoreReviewC
 
 ## License
 
-ReviewKit is released under the [MIT License](LICENSE).
+ReviewFlow is released under the [MIT License](LICENSE).
 
 ---
 

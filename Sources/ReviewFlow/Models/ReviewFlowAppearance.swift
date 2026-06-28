@@ -1,20 +1,20 @@
 #if canImport(SwiftUI)
 import SwiftUI
 
-// MARK: - ReviewKitAppearance
+// MARK: - ReviewFlowAppearance
 
-/// Visual appearance settings for ReviewKit's UI components.
+/// Visual appearance settings for ReviewFlow's UI components.
 ///
 /// Customise colours, fonts, corner radii, and more to match your app's
 /// design language.
 ///
 /// ```swift
-/// var appearance = ReviewKitAppearance.default
+/// var appearance = ReviewFlowAppearance.default
 /// appearance.accentColor = .purple
 /// appearance.cornerRadius = 24
-/// let config = ReviewKitConfig(appearance: appearance)
+/// let config = ReviewFlowConfig(appearance: appearance)
 /// ```
-public struct ReviewKitAppearance: Sendable {
+public struct ReviewFlowAppearance: Sendable {
 
     // MARK: Shape
 
@@ -49,7 +49,7 @@ public struct ReviewKitAppearance: Sendable {
     // MARK: Default
 
     /// Default appearance matching Apple's Human Interface Guidelines.
-    public static let `default` = ReviewKitAppearance()
+    public static let `default` = ReviewFlowAppearance()
 
     // MARK: Init
 

@@ -123,7 +123,7 @@ struct FeedbackCard: View {
 #if DEBUG
 #Preview {
     FeedbackCard(onEmail: {}, onFeedbackURL: {}, onLater: {})
-        .environmentObject(ReviewManager(config: ReviewKitConfig(
+        .environmentObject(ReviewManager(config: ReviewFlowConfig(
             feedbackEmail: "support@example.com",
             feedbackURL: URL(string: "https://example.com/feedback")
         )))

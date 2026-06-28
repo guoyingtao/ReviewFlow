@@ -1,28 +1,28 @@
-/// ReviewKit Demo App
+/// ReviewFlow Demo App
 ///
-/// This file shows how to integrate ReviewKit into a SwiftUI application.
+/// This file shows how to integrate ReviewFlow into a SwiftUI application.
 /// Copy the patterns that match your use case.
 ///
 /// To run this demo:
 /// 1. Create a new Xcode project (iOS App, SwiftUI interface)
-/// 2. Add ReviewKit via File > Add Package Dependencies
+/// 2. Add ReviewFlow via File > Add Package Dependencies
 /// 3. Replace your App and ContentView files with the code below
 
 #if canImport(SwiftUI)
 import SwiftUI
-import ReviewKit
+import ReviewFlow
 
 // MARK: - App entry point
 
 /*
 
 @main
-struct ReviewKitDemoApp: App {
+struct ReviewFlowDemoApp: App {
 
     /// Create one ReviewManager for the lifetime of the app.
     /// StateObject ensures it's not recreated on re-renders.
     @StateObject private var reviewManager = ReviewManager(
-        config: ReviewKitConfig(
+        config: ReviewFlowConfig(
             minLaunchCount: 3,          // Show after 3 launches
             minDaysSinceInstall: 1,     // And at least 1 day after install
             cooldownDays: 14,           // Wait 14 days between prompts
@@ -41,7 +41,7 @@ struct ReviewKitDemoApp: App {
         WindowGroup {
             ContentView()
                 // Attach the overlay to the root view
-                .reviewKit(manager: reviewManager)
+                .reviewFlow(manager: reviewManager)
                 .onAppear {
                     // Record each cold launch
                     reviewManager.recordLaunch()
@@ -52,7 +52,7 @@ struct ReviewKitDemoApp: App {
     // Forward analytics events to your own system
     private func setupAnalytics() {
         reviewManager.analyticsHandler = { event in
-            print("[ReviewKit]", event.name, event.properties)
+            print("[ReviewFlow]", event.name, event.properties)
             // MyAnalytics.track(event.name, properties: event.properties)
         }
     }
@@ -105,7 +105,7 @@ struct ContentView: View {
                     LabeledContent("Never Ask Again", value: reviewManager.storage.neverAskAgain ? "Yes" : "No")
                 }
             }
-            .navigationTitle("ReviewKit Demo")
+            .navigationTitle("ReviewFlow Demo")
         }
     }
 }
@@ -114,7 +114,7 @@ struct ContentView: View {
 
 // MARK: - Custom texts example
 
-let customTexts = ReviewKitTexts(
+let customTexts = ReviewFlowTexts(
     promptTitle: "Enjoying the app?",
     promptQuestion: "We'd love to hear your feedback.",
     loveItButton: "❤️  Love it!",
@@ -128,7 +128,7 @@ let customTexts = ReviewKitTexts(
 
 // MARK: - Custom appearance example
 
-let customAppearance = ReviewKitAppearance(
+let customAppearance = ReviewFlowAppearance(
     cornerRadius: 28,
     titleFont: .title3.bold(),
     bodyFont: .callout,

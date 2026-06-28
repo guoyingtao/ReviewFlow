@@ -1,5 +1,5 @@
 import XCTest
-@testable import ReviewKit
+@testable import ReviewFlow
 
 // MARK: - EligibilityTests
 
@@ -7,14 +7,14 @@ final class EligibilityTests: XCTestCase {
 
     private var checker: EligibilityChecker!
     private var storage: MockReviewStorage!
-    private var config: ReviewKitConfig!
+    private var config: ReviewFlowConfig!
     private let version = "1.0"
 
     override func setUp() {
         super.setUp()
         checker = EligibilityChecker()
         storage = MockReviewStorage()
-        config = ReviewKitConfig(
+        config = ReviewFlowConfig(
             minLaunchCount: 5,
             minDaysSinceInstall: 3,
             cooldownDays: 7,
@@ -126,7 +126,7 @@ final class EligibilityTests: XCTestCase {
     // MARK: - Significant events
 
     func test_insufficientSignificantEvents_blocksEligibility() {
-        config = ReviewKitConfig(
+        config = ReviewFlowConfig(
             minLaunchCount: 5,
             minDaysSinceInstall: 3,
             cooldownDays: 7,
@@ -144,7 +144,7 @@ final class EligibilityTests: XCTestCase {
     }
 
     func test_sufficientSignificantEvents_passes() {
-        config = ReviewKitConfig(
+        config = ReviewFlowConfig(
             minLaunchCount: 5,
             minDaysSinceInstall: 3,
             cooldownDays: 7,
@@ -160,7 +160,7 @@ final class EligibilityTests: XCTestCase {
     }
 
     func test_zeroMinimumSignificantEvents_ignored() {
-        config = ReviewKitConfig(minimumSignificantEvents: 0)
+        config = ReviewFlowConfig(minimumSignificantEvents: 0)
         storage.launchCount = 10
         storage.firstLaunchDate = daysAgo(10)
         storage.eventCounts = [:]

@@ -1,6 +1,6 @@
-// MARK: - ReviewKitAnalyticsEvent
+// MARK: - ReviewFlowAnalyticsEvent
 
-/// Events emitted by ReviewKit that you can forward to your analytics
+/// Events emitted by ReviewFlow that you can forward to your analytics
 /// pipeline by setting ``ReviewManager/analyticsHandler``.
 ///
 /// ```swift
@@ -8,7 +8,7 @@
 ///     Analytics.track(event.name, properties: event.properties)
 /// }
 /// ```
-public enum ReviewKitAnalyticsEvent: Sendable {
+public enum ReviewFlowAnalyticsEvent: Sendable {
 
     /// The review prompt was shown to the user.
     case promptShown

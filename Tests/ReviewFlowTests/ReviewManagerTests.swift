@@ -1,5 +1,5 @@
 import XCTest
-@testable import ReviewKit
+@testable import ReviewFlow
 
 // MARK: - ReviewManagerTests
 
@@ -15,7 +15,7 @@ final class ReviewManagerTests: XCTestCase {
         super.setUp()
         storage = MockReviewStorage()
         manager = ReviewManager(
-            config: ReviewKitConfig(
+            config: ReviewFlowConfig(
                 minLaunchCount: 5,
                 minDaysSinceInstall: 3,
                 cooldownDays: 7
@@ -92,7 +92,7 @@ final class ReviewManagerTests: XCTestCase {
 
     func test_requestReviewIfNeeded_firesAnalyticsWhenEligible() {
         makeEligible()
-        var received: [ReviewKitAnalyticsEvent] = []
+        var received: [ReviewFlowAnalyticsEvent] = []
         manager.analyticsHandler = { received.append($0) }
 
         manager.requestReviewIfNeeded()
@@ -105,7 +105,7 @@ final class ReviewManagerTests: XCTestCase {
 
     func test_requestReviewIfNeeded_firesEligibilityFailedWhenIneligible() {
         // storage is empty → ineligible
-        var received: [ReviewKitAnalyticsEvent] = []
+        var received: [ReviewFlowAnalyticsEvent] = []
         manager.analyticsHandler = { received.append($0) }
 
         manager.requestReviewIfNeeded()
@@ -162,7 +162,7 @@ final class ReviewManagerTests: XCTestCase {
         makeEligible()
         manager.requestReviewIfNeeded()
 
-        var received: [ReviewKitAnalyticsEvent] = []
+        var received: [ReviewFlowAnalyticsEvent] = []
         manager.analyticsHandler = { received.append($0) }
 
         manager.dismissPrompt()

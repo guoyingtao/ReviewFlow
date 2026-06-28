@@ -1,5 +1,5 @@
 import Foundation
-@testable import ReviewKit
+@testable import ReviewFlow
 
 // MARK: - MockReviewStorage
 

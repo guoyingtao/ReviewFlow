@@ -2,12 +2,12 @@ import Foundation
 
 // MARK: - ReviewStorage
 
-/// A type that persists ReviewKit's state between app sessions.
+/// A type that persists ReviewFlow's state between app sessions.
 ///
 /// Conform to this protocol to replace the built-in ``UserDefaultsReviewStorage``
 /// with a custom backend (e.g. Keychain, CloudKit, Core Data).
 ///
-/// All properties must be thread-safe; ReviewKit may access them from any queue.
+/// All properties must be thread-safe; ReviewFlow may access them from any queue.
 public protocol ReviewStorage: AnyObject {
 
     /// Total number of times the app has been launched.
@@ -25,6 +25,6 @@ public protocol ReviewStorage: AnyObject {
     /// A dictionary mapping event names to the number of times they were recorded.
     var eventCounts: [String: Int] { get set }
 
-    /// When `true`, ReviewKit will never show the prompt again.
+    /// When `true`, ReviewFlow will never show the prompt again.
     var neverAskAgain: Bool { get set }
 }

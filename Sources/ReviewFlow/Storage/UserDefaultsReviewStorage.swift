@@ -7,7 +7,7 @@ import Foundation
 /// All reads and writes are serialised through a private `NSLock` so the
 /// storage is safe to access from any thread.
 ///
-/// You can supply a custom `suiteName` to keep ReviewKit's data in a shared
+/// You can supply a custom `suiteName` to keep ReviewFlow's data in a shared
 /// App Group container.
 ///
 /// ```swift

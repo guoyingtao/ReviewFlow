@@ -2,7 +2,7 @@ import Foundation
 
 // MARK: - ReviewManagerDelegate
 
-/// Callback interface for key events in the ReviewKit lifecycle.
+/// Callback interface for key events in the ReviewFlow lifecycle.
 ///
 /// Implement this protocol to react to review prompt events — e.g. to log to
 /// your own analytics system, show a custom thank-you screen, or take action

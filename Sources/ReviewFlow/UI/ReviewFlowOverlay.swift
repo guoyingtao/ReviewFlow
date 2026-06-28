@@ -5,16 +5,16 @@ import StoreKit
 import UIKit
 #endif
 
-// MARK: - ReviewKitOverlay
+// MARK: - ReviewFlowOverlay
 
 /// The full-screen overlay that manages the complete review prompt flow.
 ///
-/// Injected automatically by ``ReviewKitModifier`` — you do not need to use
+/// Injected automatically by ``ReviewFlowModifier`` — you do not need to use
 /// this view directly.
-struct ReviewKitOverlay: View {
+struct ReviewFlowOverlay: View {
 
     @EnvironmentObject private var manager: ReviewManager
-    @State private var step: ReviewKitStep = .sentiment
+    @State private var step: ReviewFlowStep = .sentiment
 
     var body: some View {
         ZStack {
@@ -105,7 +105,7 @@ struct ReviewKitOverlay: View {
         manager.dismissPrompt()
     }
 
-    private func transition(to newStep: ReviewKitStep) {
+    private func transition(to newStep: ReviewFlowStep) {
         if manager.config.enableAnimations {
             withAnimation(.spring(response: 0.4, dampingFraction: 0.75)) {
                 step = newStep
@@ -172,7 +172,7 @@ extension View {
 
 #if DEBUG
 #Preview {
-    ReviewKitOverlay()
+    ReviewFlowOverlay()
         .environmentObject({
             let m = ReviewManager()
             m.storage.launchCount = 10

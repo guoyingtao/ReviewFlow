@@ -7,7 +7,7 @@ import UIKit
 
 /// Lightweight wrapper around UIKit haptic feedback generators.
 ///
-/// ReviewKit calls these automatically when ``ReviewKitConfig/enableHaptics``
+/// ReviewFlow calls these automatically when ``ReviewFlowConfig/enableHaptics``
 /// is `true`.  You can also use them directly in your own app.
 public enum HapticManager {
 

@@ -5,7 +5,7 @@ import Combine
 
 // MARK: - ReviewManager
 
-/// The central coordinator for ReviewKit.
+/// The central coordinator for ReviewFlow.
 ///
 /// `ReviewManager` tracks launches, significant events, and user sentiment,
 /// then decides when to surface the review prompt.  It also fires analytics
@@ -18,7 +18,7 @@ import Combine
 /// @main
 /// struct MyApp: App {
 ///     @StateObject private var reviewManager = ReviewManager(
-///         config: ReviewKitConfig(
+///         config: ReviewFlowConfig(
 ///             minLaunchCount: 3,
 ///             appStoreID: "123456789",
 ///             feedbackEmail: "support@example.com"
@@ -28,7 +28,7 @@ import Combine
 ///     var body: some Scene {
 ///         WindowGroup {
 ///             ContentView()
-///                 .reviewKit(manager: reviewManager)
+///                 .reviewFlow(manager: reviewManager)
 ///                 .onAppear { reviewManager.recordLaunch() }
 ///         }
 ///     }
@@ -39,7 +39,7 @@ public final class ReviewManager {
 
     // MARK: Shared instance
 
-    /// A pre-configured shared instance using ``ReviewKitConfig/default``.
+    /// A pre-configured shared instance using ``ReviewFlowConfig/default``.
     ///
     /// Use this when a single configuration is sufficient for your app.
     public static let shared = ReviewManager()
@@ -56,19 +56,19 @@ public final class ReviewManager {
     // MARK: Public properties
 
     /// The active configuration.
-    public let config: ReviewKitConfig
+    public let config: ReviewFlowConfig
 
     /// The underlying storage.
     public let storage: ReviewStorage
 
-    /// Optional closure called for every analytics event ReviewKit emits.
+    /// Optional closure called for every analytics event ReviewFlow emits.
     ///
     /// ```swift
     /// manager.analyticsHandler = { event in
     ///     MyAnalytics.track(event.name, properties: event.properties)
     /// }
     /// ```
-    public var analyticsHandler: (@Sendable (ReviewKitAnalyticsEvent) -> Void)?
+    public var analyticsHandler: (@Sendable (ReviewFlowAnalyticsEvent) -> Void)?
 
     /// Optional delegate for lifecycle callbacks.
     public weak var delegate: (any ReviewManagerDelegate)?
@@ -83,11 +83,11 @@ public final class ReviewManager {
     /// custom storage backend.
     ///
     /// - Parameters:
-    ///   - config: The ``ReviewKitConfig`` governing prompt behaviour.
+    ///   - config: The ``ReviewFlowConfig`` governing prompt behaviour.
     ///   - storage: A custom ``ReviewStorage`` implementation.  Defaults to
     ///     ``UserDefaultsReviewStorage`` backed by the standard `UserDefaults`.
     public init(
-        config: ReviewKitConfig = .default,
+        config: ReviewFlowConfig = .default,
         storage: ReviewStorage? = nil
     ) {
         self.config = config
@@ -111,7 +111,7 @@ public final class ReviewManager {
     /// Records a named significant event (e.g. `"ExportCompleted"`).
     ///
     /// Use these events to gate the prompt behind meaningful interactions, by
-    /// setting ``ReviewKitConfig/minimumSignificantEvents`` > 0.
+    /// setting ``ReviewFlowConfig/minimumSignificantEvents`` > 0.
     ///
     /// - Parameter name: An arbitrary event identifier.
     public func recordEvent(_ name: String) {

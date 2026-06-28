@@ -1,18 +1,18 @@
 import Foundation
 
-// MARK: - ReviewKitTexts
+// MARK: - ReviewFlowTexts
 
-/// Localised strings used throughout ReviewKit's UI.
+/// Localised strings used throughout ReviewFlow's UI.
 ///
 /// Override individual strings to match your app's voice and tone, or to
 /// provide translations.
 ///
 /// ```swift
-/// var texts = ReviewKitTexts.default
+/// var texts = ReviewFlowTexts.default
 /// texts.promptQuestion = "Do you love our app?"
-/// let config = ReviewKitConfig(texts: texts)
+/// let config = ReviewFlowConfig(texts: texts)
 /// ```
-public struct ReviewKitTexts: Sendable {
+public struct ReviewFlowTexts: Sendable {
 
     // MARK: Sentiment prompt
 
@@ -68,7 +68,7 @@ public struct ReviewKitTexts: Sendable {
     // MARK: Default
 
     /// Default English strings.
-    public static let `default` = ReviewKitTexts()
+    public static let `default` = ReviewFlowTexts()
 
     // MARK: Init
 

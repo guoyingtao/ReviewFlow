@@ -19,12 +19,12 @@ struct EligibilityChecker {
     ///
     /// - Parameters:
     ///   - storage: The current persisted state.
-    ///   - config: The active ``ReviewKitConfig``.
+    ///   - config: The active ``ReviewFlowConfig``.
     ///   - currentVersion: The running app version string.
     /// - Returns: An ``EligibilityChecker/Result`` describing the outcome.
     func evaluate(
         storage: ReviewStorage,
-        config: ReviewKitConfig,
+        config: ReviewFlowConfig,
         currentVersion: String
     ) -> Result {
 

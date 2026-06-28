@@ -1,5 +1,5 @@
 import XCTest
-@testable import ReviewKit
+@testable import ReviewFlow
 
 // MARK: - StorageTests
 

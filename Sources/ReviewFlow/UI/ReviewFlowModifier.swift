@@ -1,12 +1,12 @@
 #if canImport(SwiftUI)
 import SwiftUI
 
-// MARK: - ReviewKitModifier
+// MARK: - ReviewFlowModifier
 
-/// A `ViewModifier` that attaches the ReviewKit prompt overlay to any SwiftUI view.
+/// A `ViewModifier` that attaches the ReviewFlow prompt overlay to any SwiftUI view.
 ///
 /// Apply it via the ``SwiftUI/View/reviewKit(manager:)`` convenience extension.
-public struct ReviewKitModifier: ViewModifier {
+public struct ReviewFlowModifier: ViewModifier {
 
     @ObservedObject private var manager: ReviewManager
 
@@ -20,7 +20,7 @@ public struct ReviewKitModifier: ViewModifier {
             content
 
             if manager.isShowingPrompt {
-                ReviewKitOverlay()
+                ReviewFlowOverlay()
                     .environmentObject(manager)
                     .zIndex(1000)
             }

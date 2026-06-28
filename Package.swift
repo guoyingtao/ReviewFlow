@@ -4,29 +4,29 @@
 import PackageDescription
 
 let package = Package(
-    name: "ReviewKit",
+    name: "ReviewFlow",
     platforms: [
         .iOS(.v15),
         .macOS(.v12),
     ],
     products: [
         .library(
-            name: "ReviewKit",
-            targets: ["ReviewKit"]
+            name: "ReviewFlow",
+            targets: ["ReviewFlow"]
         ),
     ],
     targets: [
         .target(
-            name: "ReviewKit",
-            path: "Sources/ReviewKit",
+            name: "ReviewFlow",
+            path: "Sources/ReviewFlow",
             swiftSettings: [
                 .enableExperimentalFeature("StrictConcurrency"),
             ]
         ),
         .testTarget(
-            name: "ReviewKitTests",
-            dependencies: ["ReviewKit"],
-            path: "Tests/ReviewKitTests"
+            name: "ReviewFlowTests",
+            dependencies: ["ReviewFlow"],
+            path: "Tests/ReviewFlowTests"
         ),
     ]
 )

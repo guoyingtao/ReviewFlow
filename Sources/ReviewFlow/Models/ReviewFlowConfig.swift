@@ -3,23 +3,23 @@ import Foundation
 import SwiftUI
 #endif
 
-// MARK: - ReviewKitConfig
+// MARK: - ReviewFlowConfig
 
-/// The top-level configuration object for ReviewKit.
+/// The top-level configuration object for ReviewFlow.
 ///
-/// Create a `ReviewKitConfig` instance to customise every aspect of the review
+/// Create a `ReviewFlowConfig` instance to customise every aspect of the review
 /// prompt — thresholds, feedback destinations, animations, copy, and
 /// appearance — and pass it to ``ReviewManager``.
 ///
 /// ```swift
-/// let config = ReviewKitConfig(
+/// let config = ReviewFlowConfig(
 ///     minLaunchCount: 3,
 ///     appStoreID: "123456789",
 ///     feedbackEmail: "support@example.com"
 /// )
 /// let manager = ReviewManager(config: config)
 /// ```
-public struct ReviewKitConfig: Sendable {
+public struct ReviewFlowConfig: Sendable {
 
     // MARK: Eligibility thresholds
 
@@ -61,17 +61,17 @@ public struct ReviewKitConfig: Sendable {
     // MARK: Customisation
 
     /// Localised strings used throughout the review UI.
-    public var texts: ReviewKitTexts
+    public var texts: ReviewFlowTexts
 
     #if canImport(SwiftUI)
     /// Visual appearance overrides (SwiftUI only).
-    public var appearance: ReviewKitAppearance
+    public var appearance: ReviewFlowAppearance
     #endif
 
     // MARK: Default
 
-    /// A `ReviewKitConfig` with Apple-recommended default values.
-    public static let `default` = ReviewKitConfig()
+    /// A `ReviewFlowConfig` with Apple-recommended default values.
+    public static let `default` = ReviewFlowConfig()
 
     // MARK: Init
 
@@ -86,8 +86,8 @@ public struct ReviewKitConfig: Sendable {
         appStoreID: String? = nil,
         enableAnimations: Bool = true,
         enableHaptics: Bool = true,
-        texts: ReviewKitTexts = .default,
-        appearance: ReviewKitAppearance = .default
+        texts: ReviewFlowTexts = .default,
+        appearance: ReviewFlowAppearance = .default
     ) {
         self.minLaunchCount = minLaunchCount
         self.minDaysSinceInstall = minDaysSinceInstall
@@ -112,7 +112,7 @@ public struct ReviewKitConfig: Sendable {
         appStoreID: String? = nil,
         enableAnimations: Bool = true,
         enableHaptics: Bool = true,
-        texts: ReviewKitTexts = .default
+        texts: ReviewFlowTexts = .default
     ) {
         self.minLaunchCount = minLaunchCount
         self.minDaysSinceInstall = minDaysSinceInstall
