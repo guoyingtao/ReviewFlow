@@ -42,7 +42,13 @@ public enum HapticManager {
 
 // MARK: - Type aliases for cross-platform compilation
 
-#if !os(iOS)
+#if os(iOS)
+/// Cross-platform alias for the impact feedback style.
+public typealias UIImpactFeedbackStyle = UIImpactFeedbackGenerator.FeedbackStyle
+
+/// Cross-platform alias for the notification feedback type.
+public typealias UINotificationFeedbackType = UINotificationFeedbackGenerator.FeedbackType
+#else
 /// Placeholder type used on non-iOS platforms where haptic feedback is unavailable.
 public enum UIImpactFeedbackStyle {
     case light, medium, heavy, soft, rigid
