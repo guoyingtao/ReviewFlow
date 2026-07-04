@@ -43,6 +43,10 @@ final class ConfigTests: XCTestCase {
         XCTAssertTrue(ReviewFlowConfig.default.enableHaptics)
     }
 
+    func test_defaultConfig_showNeverAskAgainOption() {
+        XCTAssertTrue(ReviewFlowConfig.default.showNeverAskAgainOption)
+    }
+
     // MARK: - Custom values
 
     func test_customConfig_overridesDefaults() {

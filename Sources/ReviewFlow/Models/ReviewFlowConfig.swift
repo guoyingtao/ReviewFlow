@@ -58,6 +58,14 @@ public struct ReviewFlowConfig: Sendable {
     /// Whether haptic feedback is triggered on user interactions. Default: **true**.
     public var enableHaptics: Bool
 
+    /// Whether to show a "Don't Ask Again" opt-out button on the neutral choice
+    /// card. When the user taps it, ReviewFlow never prompts again (until
+    /// ``ReviewManager/reset()`` is called). Default: **true**.
+    ///
+    /// - Note: This option is intentionally *not* offered to negative-sentiment
+    ///   users, who may feel differently in a future session.
+    public var showNeverAskAgainOption: Bool
+
     // MARK: Customisation
 
     /// Localised strings used throughout the review UI.
@@ -86,6 +94,7 @@ public struct ReviewFlowConfig: Sendable {
         appStoreID: String? = nil,
         enableAnimations: Bool = true,
         enableHaptics: Bool = true,
+        showNeverAskAgainOption: Bool = true,
         texts: ReviewFlowTexts = .default,
         appearance: ReviewFlowAppearance = .default
     ) {
@@ -98,6 +107,7 @@ public struct ReviewFlowConfig: Sendable {
         self.appStoreID = appStoreID
         self.enableAnimations = enableAnimations
         self.enableHaptics = enableHaptics
+        self.showNeverAskAgainOption = showNeverAskAgainOption
         self.texts = texts
         self.appearance = appearance
     }
@@ -112,6 +122,7 @@ public struct ReviewFlowConfig: Sendable {
         appStoreID: String? = nil,
         enableAnimations: Bool = true,
         enableHaptics: Bool = true,
+        showNeverAskAgainOption: Bool = true,
         texts: ReviewFlowTexts = .default
     ) {
         self.minLaunchCount = minLaunchCount
@@ -123,6 +134,7 @@ public struct ReviewFlowConfig: Sendable {
         self.appStoreID = appStoreID
         self.enableAnimations = enableAnimations
         self.enableHaptics = enableHaptics
+        self.showNeverAskAgainOption = showNeverAskAgainOption
         self.texts = texts
     }
     #endif
