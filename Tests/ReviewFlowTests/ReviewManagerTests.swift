@@ -44,7 +44,7 @@ final class ReviewManagerTests: XCTestCase {
         storage.firstLaunchDate = original
         manager.recordLaunch()
         XCTAssertEqual(
-            storage.firstLaunchDate?.timeIntervalSince1970,
+            storage.firstLaunchDate?.timeIntervalSince1970 ?? .nan,
             original.timeIntervalSince1970,
             accuracy: 0.001
         )
