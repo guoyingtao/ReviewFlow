@@ -22,6 +22,12 @@ struct ReviewFlowOverlay: View {
     @State private var step: ReviewFlowStep = .sentiment
     @Environment(\.accessibilityReduceMotion) private var reduceMotion
 
+#if os(macOS)
+    /// SwiftUI's modern `RequestReviewAction`, captured on macOS 13+. Remains
+    /// `nil` on macOS 12, which predates it and falls back to StoreKit.
+    @State private var requestReviewAction: (() -> Void)?
+#endif
+
     /// Animations are enabled only when the app opts in *and* the user hasn't
     /// turned on Reduce Motion in Accessibility settings.
     private var animationsEnabled: Bool {
@@ -35,6 +41,13 @@ struct ReviewFlowOverlay: View {
                 .opacity(manager.config.appearance.scrimOpacity)
                 .ignoresSafeArea()
                 .onTapGesture { dismiss() }
+
+#if os(macOS)
+            // Captures SwiftUI's modern review-request action on macOS 13+.
+            if #available(macOS 13.0, *) {
+                RequestReviewCapture { requestReviewAction = $0 }
+            }
+#endif
 
             // Card
             Group {
@@ -163,7 +176,15 @@ struct ReviewFlowOverlay: View {
         }
         return true
 #elseif os(macOS)
-        SKStoreReviewController.requestReview()
+        if #available(macOS 13.0, *), let requestReviewAction {
+            requestReviewAction()
+        } else {
+            // macOS 12 predates the modern review APIs, so SKStoreReviewController
+            // is the only option there. It is deprecated on macOS 14+, but that
+            // code path is never reached on those versions — SwiftUI's
+            // RequestReviewAction (captured above) is used instead.
+            SKStoreReviewController.requestReview()
+        }
         return true
 #else
         return false
@@ -178,6 +199,29 @@ struct ReviewFlowOverlay: View {
 #endif
     }
 }
+
+// MARK: - macOS review request capture
+
+#if os(macOS)
+/// A zero-size helper that reads SwiftUI's `RequestReviewAction` from the
+/// environment and hands it back to ``ReviewFlowOverlay``.
+///
+/// This indirection is needed because ``ReviewFlowOverlay`` deploys to macOS 12,
+/// where `@Environment(\.requestReview)` is unavailable and cannot be declared
+/// directly on the view.
+@available(macOS 13.0, *)
+private struct RequestReviewCapture: View {
+    @Environment(\.requestReview) private var requestReview
+    let onCapture: (@escaping () -> Void) -> Void
+
+    var body: some View {
+        Color.clear
+            .frame(width: 0, height: 0)
+            .accessibilityHidden(true)
+            .onAppear { onCapture { requestReview() } }
+    }
+}
+#endif
 
 // MARK: - Card style modifier
 
