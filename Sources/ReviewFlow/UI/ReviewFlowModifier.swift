@@ -6,6 +6,7 @@ import SwiftUI
 /// A `ViewModifier` that attaches the ReviewFlow prompt overlay to any SwiftUI view.
 ///
 /// Apply it via the ``SwiftUI/View/reviewKit(manager:)`` convenience extension.
+@MainActor
 public struct ReviewFlowModifier: ViewModifier {
 
     @ObservedObject private var manager: ReviewManager
