@@ -1,8 +1,13 @@
 #if canImport(SwiftUI)
 import SwiftUI
-#if os(iOS)
+#if canImport(StoreKit)
 import StoreKit
+#endif
+#if os(iOS)
 import UIKit
+#endif
+#if os(macOS)
+import AppKit
 #endif
 
 // MARK: - ReviewFlowOverlay
@@ -15,6 +20,13 @@ struct ReviewFlowOverlay: View {
 
     @EnvironmentObject private var manager: ReviewManager
     @State private var step: ReviewFlowStep = .sentiment
+    @Environment(\.accessibilityReduceMotion) private var reduceMotion
+
+    /// Animations are enabled only when the app opts in *and* the user hasn't
+    /// turned on Reduce Motion in Accessibility settings.
+    private var animationsEnabled: Bool {
+        manager.config.enableAnimations && !reduceMotion
+    }
 
     var body: some View {
         ZStack {
@@ -35,7 +47,8 @@ struct ReviewFlowOverlay: View {
                     RateChoiceCard(
                         onRate: handleRate,
                         onFeedback: { transition(to: .feedback) },
-                        onLater: dismiss
+                        onLater: { dismiss() },
+                        onNeverAskAgain: { manager.markNeverAskAgain() }
                     )
                     .transition(cardTransition)
 
@@ -43,12 +56,13 @@ struct ReviewFlowOverlay: View {
                     FeedbackCard(
                         onEmail: handleEmail,
                         onFeedbackURL: handleFeedbackURL,
-                        onLater: dismiss
+                        onLater: { dismiss() }
                     )
                     .transition(cardTransition)
                 }
             }
             .padding(.horizontal, 24)
+            .accessibilityAddTraits(.isModal)
         }
         .onAppear {
             manager.markPromptShown()
@@ -58,7 +72,7 @@ struct ReviewFlowOverlay: View {
     // MARK: Transitions
 
     private var cardTransition: AnyTransition {
-        manager.config.enableAnimations
+        animationsEnabled
             ? .asymmetric(
                 insertion: .scale(scale: 0.9).combined(with: .opacity),
                 removal: .scale(scale: 0.95).combined(with: .opacity)
@@ -73,7 +87,7 @@ struct ReviewFlowOverlay: View {
         switch sentiment {
         case .positive:
             requestStoreReview()
-            dismiss()
+            dismiss(reason: .reviewRequested)
         case .neutral:
             transition(to: .rateChoice)
         case .negative:
@@ -83,7 +97,7 @@ struct ReviewFlowOverlay: View {
 
     private func handleRate() {
         requestStoreReview()
-        dismiss()
+        dismiss(reason: .reviewRequested)
     }
 
     private func handleEmail() {
@@ -91,22 +105,22 @@ struct ReviewFlowOverlay: View {
               let url = URL(string: "mailto:\(email)") else { return }
         openURL(url)
         manager.analyticsHandler?(.feedbackOpened)
-        dismiss()
+        dismiss(reason: .feedbackOpened)
     }
 
     private func handleFeedbackURL() {
         guard let url = manager.config.feedbackURL else { return }
         openURL(url)
         manager.analyticsHandler?(.feedbackOpened)
-        dismiss()
+        dismiss(reason: .feedbackOpened)
     }
 
-    private func dismiss() {
-        manager.dismissPrompt()
+    private func dismiss(reason: ReviewFlowDismissReason = .userInitiated) {
+        manager.dismissPrompt(reason: reason)
     }
 
     private func transition(to newStep: ReviewFlowStep) {
-        if manager.config.enableAnimations {
+        if animationsEnabled {
             withAnimation(.spring(response: 0.4, dampingFraction: 0.75)) {
                 step = newStep
             }
@@ -119,16 +133,41 @@ struct ReviewFlowOverlay: View {
 
     private func requestStoreReview() {
         manager.analyticsHandler?(.ratingRequested)
-#if os(iOS)
-        if let scene = UIApplication.shared.connectedScenes
-            .first(where: { $0.activationState == .foregroundActive }) as? UIWindowScene {
-            SKStoreReviewController.requestReview(in: scene)
-        }
-#endif
+
+        // Prefer the native, in-app rating prompt. Only if that path is
+        // unavailable do we fall back to the App Store "write a review" page —
+        // otherwise the user would be shown the native prompt *and* be kicked
+        // out of the app into Safari at the same time.
+        if presentNativeReviewPrompt() { return }
+
         if let appStoreID = manager.config.appStoreID,
            let url = URL(string: "https://apps.apple.com/app/id\(appStoreID)?action=write-review") {
             openURL(url)
         }
+    }
+
+    /// Presents Apple's native in-app rating prompt.
+    ///
+    /// - Returns: `true` if a native prompt was requested, `false` if no native
+    ///   path was available (in which case the caller should fall back).
+    private func presentNativeReviewPrompt() -> Bool {
+#if os(iOS)
+        guard let scene = UIApplication.shared.connectedScenes
+            .first(where: { $0.activationState == .foregroundActive }) as? UIWindowScene
+        else { return false }
+
+        if #available(iOS 16.0, *) {
+            AppStore.requestReview(in: scene)
+        } else {
+            SKStoreReviewController.requestReview(in: scene)
+        }
+        return true
+#elseif os(macOS)
+        SKStoreReviewController.requestReview()
+        return true
+#else
+        return false
+#endif
     }
 
     private func openURL(_ url: URL) {

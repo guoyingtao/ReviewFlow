@@ -11,6 +11,7 @@ struct RateChoiceCard: View {
     let onRate: () -> Void
     let onFeedback: () -> Void
     let onLater: () -> Void
+    let onNeverAskAgain: () -> Void
 
     var body: some View {
         VStack(spacing: 24) {
@@ -47,6 +48,10 @@ struct RateChoiceCard: View {
                 }
 
                 laterButton
+
+                if manager.config.showNeverAskAgainOption {
+                    neverAskAgainButton
+                }
             }
         }
         .reviewCard(
@@ -105,13 +110,27 @@ struct RateChoiceCard: View {
         }
         .buttonStyle(.plain)
     }
+
+    private var neverAskAgainButton: some View {
+        Button {
+            if manager.config.enableHaptics { HapticManager.selection() }
+            onNeverAskAgain()
+        } label: {
+            Text(manager.config.texts.neverAskAgainButton)
+                .font(manager.config.appearance.bodyFont)
+                .foregroundStyle(.secondary)
+                .frame(maxWidth: .infinity)
+                .padding(.vertical, 4)
+        }
+        .buttonStyle(.plain)
+    }
 }
 
 // MARK: - Preview
 
 #if DEBUG
 #Preview {
-    RateChoiceCard(onRate: {}, onFeedback: {}, onLater: {})
+    RateChoiceCard(onRate: {}, onFeedback: {}, onLater: {}, onNeverAskAgain: {})
         .environmentObject(ReviewManager())
         .padding()
 }
