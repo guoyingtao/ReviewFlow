@@ -1,5 +1,7 @@
 # ReviewFlow
 
+[![CI](https://github.com/guoyingtao/ReviewFlow/actions/workflows/ci.yml/badge.svg)](https://github.com/guoyingtao/ReviewFlow/actions/workflows/ci.yml)
+
 **ReviewFlow** is a production-ready, open-source Swift Package that helps iOS developers increase App Store ratings without annoying users.
 
 Instead of immediately asking users to rate your app, ReviewFlow first measures their sentiment. Happy users are guided to Apple's in-app review prompt; unhappy users are offered a way to contact you instead.
@@ -15,7 +17,7 @@ Instead of immediately asking users to rate your app, ReviewFlow first measures 
 - 📊 **Analytics hooks** — receive every flow event in a single closure  
 - 🔔 **Delegate callbacks** for lifecycle events  
 - 🎵 **Haptic feedback** (configurable)  
-- 🌐 **Localisation-ready** — override every string  
+- 🌐 **Localised out of the box** — 11 languages bundled (EN, 简体中文, 繁體中文, 日本語, 한국어, ES, FR, DE, PT-BR, RU, IT); override any string for the rest  
 - 🎨 **Fully customisable** — colours, fonts, corner radius, animations  
 - ✅ **No third-party dependencies**  
 - 🧪 **Unit tested core logic**  
@@ -142,8 +144,9 @@ let config = ReviewFlowConfig(
     appStoreID: "123456789",
 
     // Experience
-    enableAnimations: true,       // Default: true
-    enableHaptics: true,          // Default: true
+    enableAnimations: true,           // Default: true
+    enableHaptics: true,              // Default: true
+    showNeverAskAgainOption: true,    // Default: true
 
     // Customisation
     texts: .default,
@@ -160,7 +163,7 @@ let config = ReviewFlowConfig(
 | `cooldownDays` | 7 | Days between successive prompts |
 | `minimumSignificantEvents` | 0 | Minimum named events (0 = disabled) |
 | Version deduplication | always | Never prompt twice for the same version |
-| Never Ask Again | always | Respected once the user sets it |
+| Never Ask Again | always | Respected once the user opts out via the "Don't Ask Again" button (shown on the neutral choice card when `showNeverAskAgainOption` is `true`) |
 
 ---
 
@@ -182,9 +185,11 @@ reviewManager.requestReviewIfNeeded()
 
 ## Customisation
 
-### Texts
+### Texts & Localisation
 
-Override any string to match your app's tone or to provide translations:
+ReviewFlow ships a String Catalog with **11 built-in languages** — English, Simplified & Traditional Chinese, Japanese, Korean, Spanish, French, German, Brazilian Portuguese, Russian, and Italian. `ReviewFlowTexts.default` automatically resolves to the user's current language, and any unsupported language falls back to English. No setup required.
+
+To customise copy or add a language we don't ship yet, start from `.default` and override only what you need:
 
 ```swift
 var texts = ReviewFlowTexts.default
@@ -232,7 +237,7 @@ Available events:
 | `.sentimentSelected(UserSentiment)` | The user tapped a sentiment button |
 | `.ratingRequested` | The system rating dialog was triggered |
 | `.feedbackOpened` | The user opened email or a feedback URL |
-| `.dismissed` | The prompt was dismissed |
+| `.dismissed(reason:)` | The prompt closed. `reason` distinguishes completion (`.reviewRequested`, `.feedbackOpened`) from abandonment (`.userInitiated`) or opt-out (`.neverAskAgain`) |
 | `.eligibilityCheckFailed(reason:)` | Eligibility check didn't pass |
 
 ### Examples
@@ -357,12 +362,13 @@ Reset all state during development:
 reviewManager.reset()
 ```
 
-Use a `MockReviewStorage` in tests to keep tests fast and isolated:
+Use the public `InMemoryReviewStorage` in tests or SwiftUI previews to keep state fast and isolated (nothing is written to `UserDefaults`):
 
 ```swift
-let storage = MockReviewStorage()
-storage.launchCount = 10
-storage.firstLaunchDate = Calendar.current.date(byAdding: .day, value: -10, to: Date())
+let storage = InMemoryReviewStorage(
+    launchCount: 10,
+    firstLaunchDate: Calendar.current.date(byAdding: .day, value: -10, to: Date())
+)
 
 let manager = ReviewManager(config: .default, storage: storage)
 manager.requestReviewIfNeeded()
@@ -376,7 +382,7 @@ manager.requestReviewIfNeeded()
 A: No. ReviewFlow calls the standard `SKStoreReviewController.requestReview(in:)` API, which Apple limits to three prompts per 365 days. ReviewFlow's own cooldown adds an extra layer of protection.
 
 **Q: Can I show the prompt manually regardless of eligibility?**  
-A: Yes. Set the storage state to eligible values and call `requestReviewIfNeeded()`. Alternatively, manage `isShowingPrompt` is an internal API, but you can bypass eligibility by directly preparing the storage.
+A: Seed the storage with eligible values, then call `requestReviewIfNeeded()`. For example, inject an `InMemoryReviewStorage` (or your own backend) with a high `launchCount` and an old `firstLaunchDate` so every eligibility rule passes.
 
 **Q: Does ReviewFlow track users or collect data?**  
 A: No. ReviewFlow stores only launch counts, dates, and event counts in `UserDefaults` (or your custom backend) on the device. No data leaves the device.
