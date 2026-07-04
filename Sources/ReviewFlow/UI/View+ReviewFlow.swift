@@ -16,6 +16,7 @@ public extension View {
     /// ```
     ///
     /// - Parameter manager: The ``ReviewManager`` instance driving the flow.
+    @MainActor
     func reviewFlow(manager: ReviewManager) -> some View {
         modifier(ReviewFlowModifier(manager: manager))
     }
@@ -27,6 +28,7 @@ public extension View {
     /// ContentView()
     ///     .reviewFlow()
     /// ```
+    @MainActor
     func reviewFlow() -> some View {
         modifier(ReviewFlowModifier(manager: .shared))
     }

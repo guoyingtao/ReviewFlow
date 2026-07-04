@@ -210,6 +210,7 @@ struct ReviewFlowOverlay: View {
 /// where `@Environment(\.requestReview)` is unavailable and cannot be declared
 /// directly on the view.
 @available(macOS 13.0, *)
+@MainActor
 private struct RequestReviewCapture: View {
     @Environment(\.requestReview) private var requestReview
     let onCapture: (@escaping () -> Void) -> Void
