@@ -178,12 +178,12 @@ public final class ReviewManager {
 
     func markNeverAskAgain() {
         storage.neverAskAgain = true
-        dismissPrompt()
+        dismissPrompt(reason: .neverAskAgain)
     }
 
-    func dismissPrompt() {
+    func dismissPrompt(reason: ReviewFlowDismissReason = .userInitiated) {
         isShowingPrompt = false
-        analyticsHandler?(.dismissed)
+        analyticsHandler?(.dismissed(reason: reason))
         delegate?.reviewManagerDidDismissPrompt(self)
     }
 

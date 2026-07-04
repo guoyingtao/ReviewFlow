@@ -9,6 +9,7 @@ import SwiftUI
 public struct ReviewFlowModifier: ViewModifier {
 
     @ObservedObject private var manager: ReviewManager
+    @Environment(\.accessibilityReduceMotion) private var reduceMotion
 
     /// Creates a modifier backed by the given manager.
     public init(manager: ReviewManager) {
@@ -26,7 +27,7 @@ public struct ReviewFlowModifier: ViewModifier {
             }
         }
         .animation(
-            manager.config.enableAnimations
+            (manager.config.enableAnimations && !reduceMotion)
                 ? .spring(response: 0.45, dampingFraction: 0.8)
                 : .none,
             value: manager.isShowingPrompt

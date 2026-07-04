@@ -1,3 +1,26 @@
+// MARK: - ReviewFlowDismissReason
+
+/// Why the review prompt was dismissed.
+///
+/// Accompanies ``ReviewFlowAnalyticsEvent/dismissed(reason:)`` so you can tell
+/// completions apart from abandonment in your funnel — e.g. a user who tapped
+/// "Later" (``userInitiated``) versus one who proceeded to rate the app
+/// (``reviewRequested``).
+public enum ReviewFlowDismissReason: String, Sendable {
+
+    /// The user tapped "Later"/"Maybe Later" or the dimmed background.
+    case userInitiated
+
+    /// The user proceeded to the native rating prompt / App Store.
+    case reviewRequested
+
+    /// The user proceeded to an email or feedback URL.
+    case feedbackOpened
+
+    /// The user opted out permanently via "Don't Ask Again".
+    case neverAskAgain
+}
+
 // MARK: - ReviewFlowAnalyticsEvent
 
 /// Events emitted by ReviewFlow that you can forward to your analytics
@@ -22,8 +45,10 @@ public enum ReviewFlowAnalyticsEvent: Sendable {
     /// The user opened an email or URL feedback channel.
     case feedbackOpened
 
-    /// The prompt was dismissed without the user completing the flow.
-    case dismissed
+    /// The prompt was dismissed. `reason` distinguishes a completion (the user
+    /// went on to rate or send feedback) from abandonment ("Later") or an
+    /// explicit opt-out ("Don't Ask Again").
+    case dismissed(reason: ReviewFlowDismissReason)
 
     /// Eligibility check did not pass; `reason` describes why.
     case eligibilityCheckFailed(reason: String)
@@ -33,12 +58,12 @@ public enum ReviewFlowAnalyticsEvent: Sendable {
     /// A human-readable event name suitable for analytics platforms.
     public var name: String {
         switch self {
-        case .promptShown:            return "review_kit_prompt_shown"
-        case .sentimentSelected:      return "review_kit_sentiment_selected"
-        case .ratingRequested:        return "review_kit_rating_requested"
-        case .feedbackOpened:         return "review_kit_feedback_opened"
-        case .dismissed:              return "review_kit_dismissed"
-        case .eligibilityCheckFailed: return "review_kit_eligibility_failed"
+        case .promptShown:            return "review_flow_prompt_shown"
+        case .sentimentSelected:      return "review_flow_sentiment_selected"
+        case .ratingRequested:        return "review_flow_rating_requested"
+        case .feedbackOpened:         return "review_flow_feedback_opened"
+        case .dismissed:              return "review_flow_dismissed"
+        case .eligibilityCheckFailed: return "review_flow_eligibility_failed"
         }
     }
 
@@ -49,6 +74,8 @@ public enum ReviewFlowAnalyticsEvent: Sendable {
             return ["sentiment": "\(sentiment)"]
         case .eligibilityCheckFailed(let reason):
             return ["reason": reason]
+        case .dismissed(let reason):
+            return ["reason": reason.rawValue]
         default:
             return [:]
         }

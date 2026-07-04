@@ -5,6 +5,7 @@ import PackageDescription
 
 let package = Package(
     name: "ReviewFlow",
+    defaultLocalization: "en",
     platforms: [
         .iOS(.v15),
         .macOS(.v12),
@@ -19,6 +20,9 @@ let package = Package(
         .target(
             name: "ReviewFlow",
             path: "Sources/ReviewFlow",
+            resources: [
+                .process("Resources/Localizable.xcstrings"),
+            ],
             swiftSettings: [
                 .enableExperimentalFeature("StrictConcurrency"),
             ]
